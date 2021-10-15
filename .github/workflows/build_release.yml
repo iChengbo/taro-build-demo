@@ -89,7 +89,7 @@ jobs:
         uses: iChengbo/generate-qrcode@v0.3.0
         id: qrcode
         with:
-          text: https://cdn.jsdelivr.net/gh/iChengbo/action-test@${{ steps.vars.outputs.tag }}/index.android.bundle
+          text: https://cdn.jsdelivr.net/gh/iChengbo/taro-build-demo@${{ steps.vars.outputs.tag }}/index.android.bundle
 
       - name: Reset Tag
         run: |
@@ -108,6 +108,6 @@ jobs:
           body: |
             |  AndroidBundle  |  iOSBundle  |
             | :--: | :--: |
-            | ![二维码1](https://cdn.jsdelivr.net/gh/iChengbo/action-test@${{ steps.vars.outputs.tag }}/${{ steps.qrcode.outputs.QR_CODE_PNG_NAME }}) | 占位 |
+            | ![二维码1](https://cdn.jsdelivr.net/gh/iChengbo/taro-build-demo@${{ steps.vars.outputs.tag }}/${{ steps.qrcode.outputs.QR_CODE_PNG_NAME }}) | 占位 |
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.vars.outputs.tag }}
