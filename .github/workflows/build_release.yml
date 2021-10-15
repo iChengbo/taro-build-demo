@@ -15,7 +15,7 @@ env:
   VERSION_NUMBER: 1.0.0
 
 jobs:
-  AndroidDebug:
+  AndroidBuild:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
@@ -56,8 +56,15 @@ jobs:
           name: app-android-bundle
           path: ${{ github.workspace }}/android/app/src/main/assets/index.android.bundle
 
+      # 构建 Android APP
+      # - name: Build Android debug APP
+      # - name: Upload Android debug APP
 
-  iOSDebug:
+      # - name: Build Android release APP
+      # - name: Upload Android release APP
+
+
+  iOSBuild:
     runs-on: macos-latest
     steps:
       - name: Checkout Project
@@ -97,36 +104,31 @@ jobs:
           name: app-ios-bundle
           path: ${{ github.workspace }}/ios/main.jsbundle
 
+      # 构建 iOS APP
+      # - name: Build iOS debug APP
+      # - name: Upload iOS debug APP
+
+      # - name: Build iOS release APP
+      # - name: Upload iOS release APP
+
 
   Publish:
-    needs: [AndroidDebug, iOSDebug]
+    needs: [AndroidBuild, iOSBuild]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      - name: Display structure of downloaded files
-        run: ls -R
+      # - name: Display structure of downloaded files
+      #   run: ls -R
 
-      - name: Download Android Bundle
+      - name: Download all artifacts
         uses: actions/download-artifact@v2
-        with:
-          name: app-android-bundle
-
-      - name: Download iOS Bundle
-        uses: actions/download-artifact@v2
-        with:
-          name: app-ios-bundle
 
       - name: Display structure of downloaded files
         run: ls -R
 
       - name: Config git
         run: git config --global user.email "name@gmail.com" && git config --global user.name "name"
-
-      # - name: Display tag Info
-      #   run: |
-      #     git tag
-      #     echo ${{ github.ref }}
 
       - name: Set output
         id: vars
