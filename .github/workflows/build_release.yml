@@ -62,6 +62,7 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/android/app/src/main/assets/index.android.bundle
+            ${{ github.workspace }}/android/build.gradle
 
 
   iOSBuild:
@@ -110,6 +111,7 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/ios/main.jsbundle
+            ${{ github.workspace }}/ios/Podfile
 
 
   Publish:
