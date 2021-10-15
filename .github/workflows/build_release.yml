@@ -50,18 +50,18 @@ jobs:
         run: |
           yarn build:rn --platform android
 
-      - name: Upload Android Bundle
-        uses: actions/upload-artifact@v2
-        with:
-          name: app-android-bundle
-          path: ${{ github.workspace }}/android/app/src/main/assets/index.android.bundle
-
       # 构建 Android APP
       # - name: Build Android debug APP
       # - name: Upload Android debug APP
 
       # - name: Build Android release APP
       # - name: Upload Android release APP
+
+      - name: Upload Android All Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          path: |
+            ${{ github.workspace }}/android/app/src/main/assets/index.android.bundle
 
 
   iOSBuild:
@@ -98,18 +98,18 @@ jobs:
         run: |
           yarn build:rn --platform ios
 
-      - name: Upload iOS Bundle
-        uses: actions/upload-artifact@v2
-        with:
-          name: app-ios-bundle
-          path: ${{ github.workspace }}/ios/main.jsbundle
-
       # 构建 iOS APP
       # - name: Build iOS debug APP
       # - name: Upload iOS debug APP
 
       # - name: Build iOS release APP
       # - name: Upload iOS release APP
+
+      - name: Upload iOS All Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          path: |
+            ${{ github.workspace }}/ios/main.jsbundle
 
 
   Publish:
@@ -119,13 +119,14 @@ jobs:
       - uses: actions/checkout@v2
 
       # - name: Display structure of downloaded files
-      #   run: ls -R
+      #   run: ls
 
       - name: Download all artifacts
         uses: actions/download-artifact@v2
 
       - name: Display structure of downloaded files
-        run: ls -R
+        run: |
+          find . -maxdepth 2
 
       - name: Config git
         run: git config --global user.email "name@gmail.com" && git config --global user.name "name"
@@ -138,13 +139,13 @@ jobs:
         uses: iChengbo/generate-qrcode@v0.3.0
         id: AndroidBundleQrCode
         with:
-          text: https://cdn.jsdelivr.net/gh/iChengbo/taro-build-demo@${{ steps.vars.outputs.tag }}/index.android.bundle
+          text: https://cdn.jsdelivr.net/gh/iChengbo/taro-build-demo@${{ steps.vars.outputs.tag }}/artifact/index.android.bundle
 
       - name: Genarate QrCode
         uses: iChengbo/generate-qrcode@v0.3.0
         id: iOSBundleQrCode
         with:
-          text: https://cdn.jsdelivr.net/gh/iChengbo/taro-build-demo@${{ steps.vars.outputs.tag }}/main.jsbundle
+          text: https://cdn.jsdelivr.net/gh/iChengbo/taro-build-demo@${{ steps.vars.outputs.tag }}/artifact/main.jsbundle
 
       - name: Reset Tag
         run: |
@@ -159,10 +160,11 @@ jobs:
       - name: Upload release assets
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "index.android.bundle, main.jsbundle"
+          artifacts: "artifact/index.android.bundle, artifact/main.jsbundle"
           body: |
             |  AndroidBundle  |  iOSBundle  |
             | :--: | :--: |
             | ![AndroidBundle](https://cdn.jsdelivr.net/gh/iChengbo/taro-build-demo@${{ steps.vars.outputs.tag }}/${{ steps.AndroidBundleQrCode.outputs.QR_CODE_PNG_NAME }}) | ![iOSBundle](https://cdn.jsdelivr.net/gh/iChengbo/taro-build-demo@${{ steps.vars.outputs.tag }}/${{ steps.iOSBundleQrCode.outputs.QR_CODE_PNG_NAME }}) |
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.vars.outputs.tag }}
+
