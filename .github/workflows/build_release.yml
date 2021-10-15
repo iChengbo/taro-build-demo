@@ -123,10 +123,10 @@ jobs:
       - name: Config git
         run: git config --global user.email "name@gmail.com" && git config --global user.name "name"
 
-      - name: Display tag Info
-        run: |
-          git tag
-          echo ${{ github.ref }}
+      # - name: Display tag Info
+      #   run: |
+      #     git tag
+      #     echo ${{ github.ref }}
 
       - name: Set output
         id: vars
@@ -161,6 +161,6 @@ jobs:
           body: |
             |  AndroidBundle  |  iOSBundle  |
             | :--: | :--: |
-            | ![二维码1](https://cdn.jsdelivr.net/gh/iChengbo/taro-build-demo@${{ steps.vars.outputs.tag }}/${{ steps.AndroidBundleQrCode.outputs.QR_CODE_PNG_NAME }}) | ![二维码1](https://cdn.jsdelivr.net/gh/iChengbo/taro-build-demo@${{ steps.vars.outputs.tag }}/${{ steps.iOSBundleQrCode.outputs.QR_CODE_PNG_NAME }}) |
+            | ![AndroidBundle](https://cdn.jsdelivr.net/gh/iChengbo/taro-build-demo@${{ steps.vars.outputs.tag }}/${{ steps.AndroidBundleQrCode.outputs.QR_CODE_PNG_NAME }}) | ![iOSBundle](https://cdn.jsdelivr.net/gh/iChengbo/taro-build-demo@${{ steps.vars.outputs.tag }}/${{ steps.iOSBundleQrCode.outputs.QR_CODE_PNG_NAME }}) |
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.vars.outputs.tag }}
