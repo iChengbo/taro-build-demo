@@ -57,12 +57,17 @@ jobs:
       # - name: Build Android release APP
       # - name: Upload Android release APP
 
+      - name: Copy Artifacts
+        run: |
+          mkdir artifact
+          cp ${{ github.workspace }}/android/app/src/main/assets/index.android.bundle ${{ github.workspace }}/artifact
+          cp ${{ github.workspace }}/android/build.gradle ${{ github.workspace }}/artifact
+
       - name: Upload Android All Artifacts
         uses: actions/upload-artifact@v2
         with:
-          path: |
-            ${{ github.workspace }}/android/app/src/main/assets/index.android.bundle
-            ${{ github.workspace }}/android/build.gradle
+          name: artifact
+          path: ${{ github.workspace }}/artifact
 
 
   iOSBuild:
@@ -106,12 +111,17 @@ jobs:
       # - name: Build iOS release APP
       # - name: Upload iOS release APP
 
+      - name: Copy Artifacts
+        run: |
+          mkdir artifact
+          cp ${{ github.workspace }}/ios/main.jsbundle ${{ github.workspace }}/artifact
+          cp ${{ github.workspace }}/ios/Podfile ${{ github.workspace }}/artifact
+
       - name: Upload iOS All Artifacts
         uses: actions/upload-artifact@v2
         with:
-          path: |
-            ${{ github.workspace }}/ios/main.jsbundle
-            ${{ github.workspace }}/ios/Podfile
+          name: artifact
+          path: ${{ github.workspace }}/artifact
 
 
   Publish:
