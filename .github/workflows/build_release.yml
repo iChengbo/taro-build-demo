@@ -1,0 +1,113 @@
+# 工作流名称
+name: Build And Release
+
+# 触发工作流程的事件
+on:
+  push:
+    branches: [ master ]
+    tags: [ b* ]
+  pull_request:
+    branches: [ master ]
+env:
+  # 应用的application_id
+  APP_ID: com.taro.demo
+  APP_NAME: Taro Demo
+  VERSION_NUMBER: 1.0.0
+
+jobs:
+  AndroidDebug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v2
+
+      - name: Cache node_modules Folder
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/node_modules
+          key: ${{ runner.os }}-node_modules
+          restore-keys: ${{ runner.os }}-node_modules
+
+      - name: Get Yarn Cache Directory Path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache Yarn
+        uses: actions/cache@v2
+        env:
+          cache-name: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Dependencies
+        run: |
+          yarn
+
+      - name: Build Taro React Native Bundle
+        run: |
+          yarn build:rn --platform android
+
+      - name: Upload Android Bundle
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-android-bundle
+          path: ${{ github.workspace }}/android/app/src/main/assets/index.android.bundle
+
+  Publish:
+    needs: [AndroidDebug]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Download Android Bundle
+        uses: actions/download-artifact@v2
+        with:
+          name: app-android-bundle
+
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Config git
+        run: git config --global user.email "name@gmail.com" && git config --global user.name "name"
+
+      - name: Display tag Info
+        run: |
+          git tag
+          echo ${{ github.ref }}
+
+      - name: Set output
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\//}
+
+      - name: Genarate QrCode
+        uses: iChengbo/generate-qrcode@v0.3.0
+        id: qrcode
+        with:
+          text: https://cdn.jsdelivr.net/gh/iChengbo/action-test@${{ steps.vars.outputs.tag }}/index.android.bundle
+
+      - name: Reset Tag
+        run: |
+          echo ${{ steps.vars.outputs.tag }}
+          git tag -d ${{ steps.vars.outputs.tag }}
+          git push origin :refs/tags/${{ steps.vars.outputs.tag }}
+          git add .
+          git commit -m "update by github actions"
+          git tag ${{ steps.vars.outputs.tag }}
+          git push origin ${{ steps.vars.outputs.tag }}
+
+      - name: Upload release assets
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "index.android.bundle"
+          body: |
+            |  AndroidBundle  |  iOSBundle  |
+            | :--: | :--: |
+            | ![二维码1](https://cdn.jsdelivr.net/gh/iChengbo/action-test@${{ steps.vars.outputs.tag }}/${{ steps.qrcode.outputs.QR_CODE_PNG_NAME }}) | 占位 |
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.vars.outputs.tag }}
