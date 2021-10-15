@@ -157,7 +157,7 @@ jobs:
       - name: Upload release assets
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "index.android.bundle, main.bundle"
+          artifacts: "index.android.bundle, main.jsbundle"
           body: |
             |  AndroidBundle  |  iOSBundle  |
             | :--: | :--: |
