@@ -4,10 +4,10 @@ name: Build And Release
 # 触发工作流程的事件
 on:
   push:
-    branches: [ master ]
     tags: [ b* ]
   pull_request:
     branches: [ master ]
+
 env:
   # 应用的application_id
   APP_ID: com.taro.demo
