@@ -142,7 +142,7 @@ jobs:
         uses: iChengbo/generate-qrcode@v0.3.0
         id: iOSBundleQrCode
         with:
-          text: https://cdn.jsdelivr.net/gh/iChengbo/taro-build-demo@${{ steps.vars.outputs.tag }}/main.bundle
+          text: https://cdn.jsdelivr.net/gh/iChengbo/taro-build-demo@${{ steps.vars.outputs.tag }}/main.jsbundle
 
       - name: Reset Tag
         run: |
