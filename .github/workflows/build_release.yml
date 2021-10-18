@@ -8,15 +8,34 @@ on:
   pull_request:
     branches: [ master ]
 
-env:
-  # 应用的application_id
-  APP_ID: com.taro.demo
-  APP_NAME: Taro Demo
-  VERSION_NUMBER: 1.0.0
-
 jobs:
   AndroidBuild:
     runs-on: ubuntu-latest
+    env:
+      # 应用的application_id
+      APP_ID: com.taro.demo
+      # 应用名称
+      APP_NAME: Taro Demo
+      # 应用icon
+      APP_ICON: ic_launcher
+      # 应用圆角icon
+      APP_ROUND_ICON: ic_launcher_round
+      # 应用支持的CPU架构
+      APP_ABI_FILTERS: armeabi-v7a, arm64-v8a
+      # 打包类型
+      BUILD_TYPE: debug
+      # 版本名称
+      VERSION_NAME: 1.0.0
+      # 版本号
+      VERSION_CODE: 10
+      # 密钥库文件
+      KEYSTORE_FILE: debug.keystore
+      # 密钥库口令
+      KEYSTORE_PASSWORD: android
+      # 密钥库别名
+      KEYSTORE_KEY_ALIAS: androiddebugkey
+      # 密钥库别名口令
+      KEYSTORE_KEY_PASSWORD: android
     steps:
       - name: Checkout Project
         uses: actions/checkout@v2
@@ -172,7 +191,7 @@ jobs:
       - name: Upload release assets
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "artifact/index.android.bundle, artifact/main.jsbundle"
+          artifacts: "artifact"
           body: |
             |  AndroidBundle  |  iOSBundle  |
             | :--: | :--: |
